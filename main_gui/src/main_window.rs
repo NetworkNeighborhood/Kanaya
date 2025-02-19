@@ -12,7 +12,6 @@ seq_ids!(
     IDM_ABOUT
 );
 
-#[derive(Clone)]
 pub struct MainWindow {
     wnd: gui::WindowMain
 }
@@ -30,7 +29,7 @@ impl MainWindow {
         );
         
         let new_self: Self = Self { wnd };
-        new_self.register_window_procedure();
+        unsafe { new_self.register_window_procedure(); }
         new_self
     }
     
@@ -101,23 +100,25 @@ impl MainWindow {
         self.wnd.run_main(None)
     }
     
-    fn register_window_procedure(&self) {
+    // Unsafe = more efficient code, reuse same pointer instead of cloning the
+    // structure needlessly.
+    unsafe fn register_window_procedure(&self) {
+        let self_ptr = self as *const Self;
+        
         self.wnd.on().wm_close(move || {
             winsafe::PostQuitMessage(0);
             Ok(())
         });
         
         // Exit menu item:
-        let self2 = self.clone();
         self.wnd.on().wm_command(IDM_EXIT, winsafe::co::BN::CLICKED, move || {
-            self2.wnd.close();
+            (*self_ptr).wnd.close();
             Ok(gui::WmRet::HandledOk)
         });
         
         // About menu item:
-        let self2 = self.clone();
         self.wnd.on().wm_command(IDM_ABOUT, winsafe::co::BN::CLICKED, move || {
-            self2.on_menu_about();
+            (*self_ptr).on_menu_about();
             Ok(gui::WmRet::HandledOk)
         });
     }
