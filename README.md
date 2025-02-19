@@ -17,6 +17,6 @@ Besides the Rust compiler and Cargo, you'll need to install Clang libraries. The
 winget install LLVM.LLVM
 ```
 
-## restyle integration
+## Restyle integration
 
-At this moment, restyle integration is not implemented.
+At this moment, Restyle integration is not implemented.

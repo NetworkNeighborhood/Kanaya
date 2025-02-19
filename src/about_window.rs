@@ -43,7 +43,7 @@ impl AboutWindow {
         
         let self2 = self.clone();
         self.wnd.on().wm_command(IDC_ABOUT_HOMEPAGE as u16, winsafe::co::BN::CLICKED, move || {
-            winsafe::HWND::NULL.ShellExecute("open", "https://github.com/NetworkNeighborhood/kanaya", None, None, co::SW::SHOWNORMAL)
+            winsafe::HWND::NULL.ShellExecute("open", "https://github.com/NetworkNeighborhood/Kanaya", None, None, co::SW::SHOWNORMAL)
                 .expect("Failed to open homepage website.");
             self2.close();
             Ok(gui::WmRet::HandledOk)
@@ -70,6 +70,6 @@ impl AboutWindow {
         self.button_ok.set_text("&OK");
         self.button_homepage.set_text("&Homepage");
         self.label_description.set_text(&format!("{} Visual Style editor", env!("KANAYA_NAME_DISPLAY")));
-        self.label_copyright.set_text(&format!("Copyright (C) 2025 {} && the restyle authors", env!("KANAYA_PUBLISHER_DISPLAY")));
+        self.label_copyright.set_text(&format!("Copyright (C) 2025 {}", env!("KANAYA_PUBLISHER_DISPLAY")));
     }
 }

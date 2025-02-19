@@ -87,11 +87,11 @@ fn compile_windows_version_info() {
     
     if env::var("KANAYA_PUBLISHER_DISPLAY").unwrap() == "Network Neighborhood" {
         // First-party (Network Neighborhood) build:
-        res.set("LegalCopyright", &format!("(C) {build_year} Network Neighborhood & the restyle authors", build_year = chrono::Utc::now().year()));
+        res.set("LegalCopyright", &format!("(C) {build_year} Network Neighborhood", build_year = chrono::Utc::now().year()));
     }
     else {
         // Third-party build:
-        res.set("LegalCopyright", &format!("(C) {build_year} {other_publisher}, Network Neighborhood, the restyle authors",
+        res.set("LegalCopyright", &format!("(C) {build_year} {other_publisher} & Network Neighborhood",
             build_year = chrono::Utc::now().year(),
             other_publisher = &env::var("KANAYA_PUBLISHER_DISPLAY").unwrap()
         ));
