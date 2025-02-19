@@ -1,0 +1,5 @@
+[env]
+KANAYA_NAME_DISPLAY = "Kanaya"
+KANAYA_NAME_PROGRAMMATIC = "Kanaya"
+KANAYA_PUBLISHER_DISPLAY = "Network Neighborhood"
+KANAYA_PUBLISHER_PROGRAMMATIC = "NetworkNeighborhood"
