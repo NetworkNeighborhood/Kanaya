@@ -1,0 +1,17 @@
+[package]
+name = "kanaya"
+description = "GUI editor for Microsoft Windows visual styles."
+authors = [ "Isabella Lulamoon <kawapure@gmail.com>" ]
+repository = "https://github.com/NetworkNeighborhood/kanaya"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = { workspace = true }
+winsafe = { workspace = true }
+windows = { workspace = true }
+
+[build-dependencies]
+winres = { workspace = true }
+chrono = { workspace = true }
+bindgen = { workspace = true }

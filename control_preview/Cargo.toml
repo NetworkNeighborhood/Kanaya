@@ -1,0 +1,17 @@
+[package]
+name = "ctrlprev"
+description = "Previews user controls with a given msstyles file path."
+authors = [ "Isabella Lulamoon <kawapure@gmail.com>" ]
+repository = "https://github.com/NetworkNeighborhood/kanaya"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = { workspace = true }
+winsafe = { workspace = true }
+windows = { workspace = true }
+
+[build-dependencies]
+winres = { workspace = true }
+chrono = { workspace = true }
+bindgen = { workspace = true }
