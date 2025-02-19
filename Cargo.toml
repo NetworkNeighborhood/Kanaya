@@ -1,5 +1,5 @@
 [workspace]
-members = [ "main_gui", "control_preview" ]
+members = [ "common", "main_gui", "control_preview" ]
 
 [workspace.dependencies]
 chrono = "0.4.39"

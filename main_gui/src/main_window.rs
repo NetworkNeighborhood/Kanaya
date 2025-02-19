@@ -101,16 +101,16 @@ impl MainWindow {
         self.wnd.run_main(None)
     }
     
-    pub fn exit(&self) {
-        self.wnd.close();
-        winsafe::PostQuitMessage(0);
-    }
-    
     fn register_window_procedure(&self) {
+        self.wnd.on().wm_close(move || {
+            winsafe::PostQuitMessage(0);
+            Ok(())
+        });
+        
         // Exit menu item:
         let self2 = self.clone();
         self.wnd.on().wm_command(IDM_EXIT, winsafe::co::BN::CLICKED, move || {
-            self2.exit();
+            self2.wnd.close();
             Ok(gui::WmRet::HandledOk)
         });
         

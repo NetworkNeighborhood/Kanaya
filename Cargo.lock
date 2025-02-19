@@ -124,7 +124,9 @@ name = "ctrlprev"
 version = "0.1.0"
 dependencies = [
  "bindgen",
+ "cc",
  "chrono",
+ "kanaya_common",
  "windows",
  "winres",
  "winsafe",
@@ -190,9 +192,17 @@ version = "0.1.0"
 dependencies = [
  "bindgen",
  "chrono",
+ "kanaya_common",
  "windows",
  "winres",
  "winsafe",
+]
+
+[[package]]
+name = "kanaya_common"
+version = "1.0.0"
+dependencies = [
+ "chrono",
 ]
 
 [[package]]

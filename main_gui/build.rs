@@ -1,16 +1,18 @@
-use std::fs;
 use std::path::PathBuf;
 use std::env;
 use chrono;
 use chrono::Datelike;
-use chrono::TimeZone;
+use kanaya_common::build_common as common;
+use kanaya_common::extract_environment;
 
 extern crate winres;
 
-const KANAYA_NAME_DISPLAY: &str = env!("KANAYA_NAME_DISPLAY");
-const KANAYA_NAME_PROGRAMMATIC: &str = env!("KANAYA_NAME_PROGRAMMATIC");
-const KANAYA_PUBLISHER_DISPLAY: &str = env!("KANAYA_PUBLISHER_DISPLAY");
-const KANAYA_PUBLISHER_PROGRAMMATIC: &str = env!("KANAYA_PUBLISHER_PROGRAMMATIC");
+extract_environment!(
+    KANAYA_NAME_DISPLAY
+    KANAYA_NAME_PROGRAMMATIC
+    KANAYA_PUBLISHER_DISPLAY
+    KANAYA_PUBLISHER_PROGRAMMATIC
+);
 
 const RESOURCE_SOURCE_FILE_PATH: &str = "resources/resource.rc";
 
@@ -72,7 +74,7 @@ const VS_FF_DEBUG: u64 = 1;
 fn compile_windows_version_info() {
     //let debug_type = if env::var("CARGO_")
     
-    let build_num = get_build_number();
+    let build_num = common::get_build_number();
     
     let mut res = winres::WindowsResource::new();
     res.set_output_file("res_versioninfo.lib");
@@ -132,13 +134,4 @@ fn compile_windows_version_info() {
     let output_dir = env::var("OUT_DIR").unwrap();
     println!("cargo:rustc-link-search=native={}", output_dir);
     println!("cargo:rustc-link-lib=dylib=res_versioninfo");
-}
-
-// Network Neighborhood common build number convention: days past since project developer begun.
-fn get_build_number() -> i64 {
-    let now = chrono::Utc::now();
-    let base = chrono::Utc.with_ymd_and_hms(2025, 1, 17, 0, 0, 0).unwrap();
-    let diff = now - base;
-    println!("cargo::warning=build date: {}", diff.num_days());
-    diff.num_days()
 }

@@ -15,3 +15,6 @@ windows = { workspace = true }
 winres = { workspace = true }
 chrono = { workspace = true }
 bindgen = { workspace = true }
+
+[build-dependencies.kanaya_common]
+path = "../common"

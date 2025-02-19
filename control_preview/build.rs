@@ -1,62 +1,56 @@
 use std::fs;
-use std::path::PathBuf;
 use std::env;
+use std::path::PathBuf;
 use chrono;
 use chrono::Datelike;
-use chrono::TimeZone;
+use kanaya_common::build_common as common;
+use kanaya_common::extract_environment;
 
 extern crate winres;
 
-const KANAYA_NAME_DISPLAY: &str = env!("KANAYA_NAME_DISPLAY");
-const KANAYA_NAME_PROGRAMMATIC: &str = env!("KANAYA_NAME_PROGRAMMATIC");
-const KANAYA_PUBLISHER_DISPLAY: &str = env!("KANAYA_PUBLISHER_DISPLAY");
-const KANAYA_PUBLISHER_PROGRAMMATIC: &str = env!("KANAYA_PUBLISHER_PROGRAMMATIC");
-
-const RESOURCE_SOURCE_FILE_PATH: &str = "resources/resource.rc";
+extract_environment!(
+    KANAYA_NAME_DISPLAY
+    KANAYA_NAME_PROGRAMMATIC
+    KANAYA_PUBLISHER_DISPLAY
+    KANAYA_PUBLISHER_PROGRAMMATIC
+);
 
 fn main() {
     println!("cargo::rustc-link-lib=comctl32");
     println!("cargo::rustc-link-lib=uxtheme");
     
-    // run_bindgen();
+    build_c();
+    run_bindgen();
     
-    // compile_windows_resources();
     compile_windows_version_info();
 }
 
-// fn run_bindgen() {
-//     let bindings = bindgen::Builder::default()
-//         .header("wrapper.h")
-//         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
-//         .generate()
-//         .expect("Unable to generate bindings.");
+fn build_c() {
+    cc::Build::new()
+        .file("src/hook.c")
+        .file("minhook/src/buffer.c")
+        .file("minhook/src/hook.c")
+        .file("minhook/src/trampoline.c")
+        .file("minhook/src/hde/hde64.c")
+        .compile("ctrlprevc");
     
-//     // Write the bindings to the $OUT_DIR/bindings.rs file.
-//     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-//     bindings
-//         .write_to_file(out_path.join("bindings.rs"))
-//         .expect("Couldn't write bindings!");
-// }
+    println!("cargo::rustc-link-lib=ctrlprevc");
+}
 
-// fn compile_windows_resources() {
-//     //create_c_header_stubs();
-//     //let combined_resource_path = create_combined_resource_file();
-//     println!("cargo::rerun-if-changed={RESOURCE_SOURCE_FILE_PATH}");
+fn run_bindgen() {
+    let bindings = bindgen::Builder::default()
+        .header("src/control_preview.h")
+        .allowlist_file("src/control_preview.h")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
+        .generate()
+        .expect("Unable to generate bindings.");
     
-//     let mut res = winres::WindowsResource::new();
-//     res.set_output_file("res_main.lib");
-//     res.add_toolkit_include(true);
-//     res.set_resource_file(RESOURCE_SOURCE_FILE_PATH);
-    
-//     if let Err(e) = res.compile() {
-//         eprintln!("{}", e);
-//         std::process::exit(1);
-//     }
-    
-//     let output_dir = env::var("OUT_DIR").unwrap();
-//     println!("cargo:rustc-link-search=native={}", output_dir);
-//     println!("cargo:rustc-link-lib=dylib=res_main");
-// }
+    // Write the bindings to the $OUT_DIR/bindings.rs file.
+    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
+    bindings
+        .write_to_file(out_path.join("bindings.rs"))
+        .expect("Couldn't write bindings!");
+}
 
 // Debug file flag.
 const VS_FF_DEBUG: u64 = 1;
@@ -64,7 +58,7 @@ const VS_FF_DEBUG: u64 = 1;
 fn compile_windows_version_info() {
     //let debug_type = if env::var("CARGO_")
     
-    let build_num = get_build_number();
+    let build_num = common::get_build_number();
     
     let mut res = winres::WindowsResource::new();
     res.set_output_file("res_versioninfo.lib");
@@ -115,6 +109,10 @@ fn compile_windows_version_info() {
     
     res.set_version_info(winres::VersionInfo::FILEVERSION, version);
     res.set_version_info(winres::VersionInfo::PRODUCTVERSION, version);
+    
+    // CREATEPROCESS_MANIFEST_RESOURCE_ID = 1 RT_MANIFEST = 24
+    res.append_rc_content("\n1 24 \"control_preview_manifest.xml\"\n\n");
+    create_manifest().expect("Failed to create manifest.");
 
     if let Err(e) = res.compile() {
         eprintln!("{}", e);
@@ -126,11 +124,31 @@ fn compile_windows_version_info() {
     println!("cargo:rustc-link-lib=dylib=res_versioninfo");
 }
 
-// Network Neighborhood common build number convention: days past since project developer begun.
-fn get_build_number() -> i64 {
-    let now = chrono::Utc::now();
-    let base = chrono::Utc.with_ymd_and_hms(2025, 1, 17, 0, 0, 0).unwrap();
-    let diff = now - base;
-    println!("cargo::warning=build date: {}", diff.num_days());
-    diff.num_days()
+fn create_manifest() -> Option<()> {
+    let output_file = env::var("OUT_DIR").unwrap() + "/control_preview_manifest.xml";
+    
+    let contents = format!(r##"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assemblyIdentity
+    version="1.0.0.0"
+    processorArchitecture="*"
+    name="{publisher}.{product}.ControlPreview"
+    type="win32"
+/>
+<description>Previews user controls with a given msstyles file path.</description>
+<dependency>
+    <dependentAssembly>
+        <assemblyIdentity
+            type="win32"
+            name="Microsoft.Windows.Common-Controls"
+            version="6.0.0.0"
+            processorArchitecture="*"
+            publicKeyToken="6595b64144ccf1df"
+            language="*"
+        />
+    </dependentAssembly>
+</dependency>
+</assembly>"##, product = KANAYA_NAME_PROGRAMMATIC, publisher = KANAYA_PUBLISHER_PROGRAMMATIC);
+
+    fs::write(output_file, contents).ok()
 }
