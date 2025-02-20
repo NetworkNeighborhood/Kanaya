@@ -1,0 +1,23 @@
+diff --git a/restyle.cpp b/restyle.cpp
+index c56b650..cd94ac2 100644
+--- a/restyle.cpp
++++ b/restyle.cpp
+@@ -64,7 +64,7 @@ bool LoadThemeModule(LPWSTR pszPath)
+ 	return true;
+ }
+ 
+-int wmain(int argc, wchar_t *argv[])
++__declspec(dllexport) int KanayaRestyleCliExeMain(int argc, wchar_t *argv[])
+ {
+ 	// Header
+ 	Log(
+@@ -72,7 +72,8 @@ int wmain(int argc, wchar_t *argv[])
+ #if DEBUG
+ 		L" (DEBUG BUILD)"
+ #endif
+-		L"\n",
++		L"\n"
++		L"Built for the Kanaya visual styles editor.\n",
+ 		VER_MAJOR, VER_MINOR, VER_REVISION
+ 	);
+ 	Log(L"Built %s %s\n\n", __WDATE__, __WTIME__);

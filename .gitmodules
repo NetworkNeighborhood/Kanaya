@@ -1,3 +1,6 @@
 [submodule "control_preview/minhook"]
 	path = control_preview/minhook
 	url = https://github.com/TsudaKageyu/minhook
+[submodule "restyle/src"]
+	path = restyle/src
+	url = https://github.com/NetworkNeighborhood/Restyle
