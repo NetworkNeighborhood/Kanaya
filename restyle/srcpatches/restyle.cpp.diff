@@ -7,7 +7,7 @@ index c56b650..cd94ac2 100644
  }
  
 -int wmain(int argc, wchar_t *argv[])
-+__declspec(dllexport) int KanayaRestyleCliExeMain(int argc, wchar_t *argv[])
++extern "C" __declspec(dllexport) int KanayaRestyleCliExeMain(int argc, wchar_t *argv[])
  {
  	// Header
  	Log(

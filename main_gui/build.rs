@@ -5,6 +5,9 @@ use chrono::Datelike;
 use kanaya_common::build_common as common;
 use kanaya_common::extract_environment;
 
+#[path = "build/build_restyle.rs"]
+mod build_restyle;
+
 extern crate winres;
 
 extract_environment!(
@@ -19,6 +22,10 @@ const RESOURCE_SOURCE_FILE_PATH: &str = "resources/resource.rc";
 fn main() {
     println!("cargo::rustc-link-lib=comctl32");
     println!("cargo::rustc-link-lib=uxtheme");
+    
+    if std::env::var("CARGO_FEATURE_RESTYLE_INTEGRATION").is_ok() {
+        build_restyle::run_build().unwrap();
+    }
     
     run_bindgen();
     

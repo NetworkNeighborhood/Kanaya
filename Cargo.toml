@@ -6,6 +6,10 @@ chrono = "0.4.39"
 winsafe = { version = "0.0.22", features = [ "gui", "user", "comctl", "shell" ] }
 winres = { git = "https://github.com/radkum/winres" }
 bindgen = "0.71.0"
+const_format = "0.2.34"
+
+[patch.crates-io]
+winsafe = { path = "../kawa-winsafe" }
 
 [workspace.dependencies.windows]
 version = "0.59"

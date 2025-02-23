@@ -6,15 +6,31 @@ repository = "https://github.com/NetworkNeighborhood/kanaya"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+# Enables Restyle C++ integration. This is disabled by default for now, because Restyle builds are broken upstream.
+restyle-integration = []
+
 [dependencies]
 chrono = { workspace = true }
 winsafe = { workspace = true }
 windows = { workspace = true }
+const_format = { workspace = true }
 
 [build-dependencies]
+winsafe = { workspace = true }
 winres = { workspace = true }
 chrono = { workspace = true }
 bindgen = { workspace = true }
+const_format = { workspace = true }
+diffy = "0.4.2"
+serde_json = "1.0.139"
+anyhow = { version = "1.0.96", features = ["backtrace"] }
+target-lexicon = "0.13.2"
 
 [build-dependencies.kanaya_common]
 path = "../common"
+
+[profile.dev.build-override]
+opt-level = 0
+codegen-units = 256
+debug = true
