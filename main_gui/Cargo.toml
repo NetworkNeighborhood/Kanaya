@@ -15,6 +15,9 @@ chrono = { workspace = true }
 winsafe = { workspace = true }
 windows = { workspace = true }
 const_format = { workspace = true }
+fluent = { workspace = true }
+fluent-fallback = { workspace = true }
+unic-langid = { workspace = true }
 
 [build-dependencies]
 winsafe = { workspace = true }
@@ -26,6 +29,9 @@ diffy = "0.4.2"
 serde_json = "1.0.139"
 anyhow = { version = "1.0.96", features = ["backtrace"] }
 target-lexicon = "0.13.2"
+
+[dependencies.kanaya_common]
+path = "../common"
 
 [build-dependencies.kanaya_common]
 path = "../common"

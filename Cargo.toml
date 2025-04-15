@@ -7,6 +7,9 @@ winsafe = { version = "0.0.22", features = [ "gui", "user", "comctl", "shell" ] 
 winres = { git = "https://github.com/radkum/winres" }
 bindgen = "0.71.0"
 const_format = "0.2.34"
+fluent = "0.16.1"
+fluent-fallback = "0.7.1"
+unic-langid = { version = "0.9.5", features = ["unic-langid-macros"] }
 
 [patch.crates-io]
 winsafe = { path = "../kawa-winsafe" }

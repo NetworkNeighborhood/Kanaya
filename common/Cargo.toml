@@ -8,3 +8,8 @@ edition = "2021"
 
 [dependencies]
 chrono = { workspace = true }
+fluent = { workspace = true }
+fluent-fallback = { workspace = true }
+futures = "0.3.31"
+rustc-hash = "1"
+unic-langid = { workspace = true }
